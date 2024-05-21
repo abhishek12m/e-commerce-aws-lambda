@@ -1,15 +1,16 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB.DocumentClient();
-
+const ORDERS_TABLE=process.env.ORDERS_TABLE;
+const { v4: uuidv4 } = require('uuid');
 
 module.exports.orderProduct = async (event) => {
     const { productId, quantity } = JSON.parse(event.body);
     const userId = event.requestContext.authorizer.principalId;
-    const orderId = AWS.util.uuid.v4();
+    const orderId = uuidv4();
     const orderDate = new Date().toISOString();
 
     const params = {
-        TableName: process.env.ORDERS_TABLE,
+        TableName: ORDERS_TABLE,
         Item: {
             orderId,
             userId,

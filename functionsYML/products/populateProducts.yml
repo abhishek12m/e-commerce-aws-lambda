@@ -1,4 +1,6 @@
 handler: scripts/populateProducts.populateProductsHandler
+environment:
+  PRODUCTS_TABLE: ${file(./serverless/env.yml):environments.PRODUCTS_TABLE}
 events:
   - http:
       path: populate-products

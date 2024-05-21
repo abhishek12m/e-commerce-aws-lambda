@@ -1,4 +1,6 @@
 handler: usersHandler/login.login
+environment:
+  USERS_TABLE: ${file(./serverless/env.yml):environments.USERS_TABLE}
 events:
   - http:
       path: login

@@ -1,4 +1,6 @@
 handler: products/orderProduct.orderProduct
+environment:
+  ORDERS_TABLE: ${file(./serverless/env.yml):environments.ORDERS_TABLE}
 events:
   - http:
       path: create-order

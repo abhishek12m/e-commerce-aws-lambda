@@ -1,4 +1,6 @@
 handler: usersHandler/register.register
+environment:
+  USERS_TABLE: ${file(./serverless/env.yml):environments.USERS_TABLE}
 events:
   - http:
       path: register

@@ -3,12 +3,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { getSSMParameter } = require('../ssmUtil/ssmUtil');
 const dynamo = new AWS.DynamoDB.DocumentClient();
+const USERS_TABLE=process.env.USERS_TABLE;
 
 module.exports.login = async (event) => {
     const { username,email, password } = JSON.parse(event.body);
     const secretKey = await getSSMParameter("SECRET_KEY");
     const params = {
-        TableName: process.env.USERS_TABLE,
+        TableName: USERS_TABLE,
         Key: { username }
     };
 
