@@ -1,0 +1,8 @@
+handler: products/listProducts.listProducts
+events:
+  - http:
+      path: getAllproducts
+      method: get
+      authorizer:
+        name: authorizeToken
+        type: request

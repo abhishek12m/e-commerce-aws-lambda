@@ -1,0 +1,5 @@
+handler: usersHandler/register.register
+events:
+  - http:
+      path: register
+      method: post

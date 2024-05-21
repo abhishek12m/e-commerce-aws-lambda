@@ -1,0 +1,5 @@
+handler: usersHandler/login.login
+events:
+  - http:
+      path: login
+      method: post

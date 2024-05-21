@@ -1,0 +1,76 @@
+service: e-commerce
+frameworkVersion: '3'
+
+custom:
+  tableNameUsers: 'users-table-${sls:stage}'
+  tableNameProducts: 'products-table-${sls:stage}'
+  tableNameOrders: 'orders-table-${sls:stage}'
+  # scriptHooks:
+  #   after:deploy:finalize: sls invoke local -f populateProducts
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - Fn::GetAtt: [ UsersTable, Arn ]
+            - Fn::GetAtt: [ ProductsTable, Arn ]
+            - Fn::GetAtt: [ OrdersTable, Arn ]
+  environment:
+    USERS_TABLE: ${self:custom.tableNameUsers}
+    PRODUCTS_TABLE: ${self:custom.tableNameProducts}
+    ORDERS_TABLE: ${self:custom.tableNameOrders}
+    JWT_SECRET: 'your_jwt_secret'
+
+functions: ${file(./functionsYML/main.yml):functions}
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: username
+            AttributeType: S
+        KeySchema:
+          - AttributeName: username
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableNameUsers}
+
+    ProductsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: productId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: productId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableNameProducts}
+
+    OrdersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: orderId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableNameOrders}
+
+# plugins:
+#   - serverless-scriptable-plugin

@@ -1,0 +1,5 @@
+handler: scripts/populateProducts.populateProductsHandler
+events:
+  - http:
+      path: populate-products
+      method: post

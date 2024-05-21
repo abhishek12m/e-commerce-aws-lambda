@@ -1,0 +1,8 @@
+handler: products/orderProduct.orderProduct
+events:
+  - http:
+      path: create-order
+      method: post
+      authorizer:
+        name: authorizeToken
+        type: request

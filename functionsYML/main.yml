@@ -1,0 +1,8 @@
+functions:
+  authorizeToken: ${file(./functionsYML/auth/authorizeToken.yml)}
+  login: ${file(./functionsYML/auth/login.yml)}
+  register: ${file(./functionsYML/auth/register.yml)}
+  orderProduct: ${file(./functionsYML/products/orderProduct.yml)}
+  listProducts: ${file(./functionsYML/products/listProducts.yml)}
+  getProduct: ${file(./functionsYML/products/getProduct.yml)}
+  populateProducts: ${file(./functionsYML/products/populateProducts.yml)}
