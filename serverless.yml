@@ -1,11 +1,11 @@
 service: e-commerce
 frameworkVersion: '3'
 
-
-
 provider:
   name: aws
   runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
   iam:
     role:
       statements:
@@ -21,6 +21,7 @@ provider:
             - Fn::GetAtt: [ UsersTable, Arn ]
             - Fn::GetAtt: [ ProductsTable, Arn ]
             - Fn::GetAtt: [ OrdersTable, Arn ]
+            - Fn::GetAtt: [ OrdersStatusTable, Arn ]
 
 functions: ${file(./functionsYML/main.yml):functions}
 

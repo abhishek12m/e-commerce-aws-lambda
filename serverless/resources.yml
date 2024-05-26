@@ -1,8 +1,5 @@
 Resources:
   UsersTable: ${file(./serverless/userTable.yml)}
-
   ProductsTable: ${file(./serverless/productsTable.yml)}
-
   OrdersTable: ${file(./serverless/ordersTable.yml)}
-
-  ordersStatusTable: ${file(./serverless/ordersStatusTable.yml)}
+  OrdersStatusTable: ${file(./serverless/ordersStatusTable.yml)}

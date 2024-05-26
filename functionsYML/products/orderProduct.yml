@@ -1,6 +1,9 @@
 handler: products/orderProduct.orderProduct
 environment:
   ORDERS_TABLE: ${file(./serverless/env.yml):environments.ORDERS_TABLE}
+  ORDERS_STATUS_TABLE: ${file(./serverless/env.yml):environments.ORDERS_STATUS_TABLE}
+  UPDATE_ORDER_STATUS_LAMBDA_ARN: arn:aws:lambda:${self:provider.region}:${aws:accountId}:function:${self:service}-${self:provider.stage}-updateOrderStatus
+
 events:
   - http:
       path: create-order

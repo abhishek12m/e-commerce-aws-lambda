@@ -7,7 +7,7 @@ const USERS_TABLE=process.env.USERS_TABLE;
 
 module.exports.login = async (event) => {
     const { username,email, password } = JSON.parse(event.body);
-    const secretKey = await getSSMParameter("SECRET_KEY");
+    const secretKey = await getSSMParameter("SECRET_KEY") || "secret";
     const params = {
         TableName: USERS_TABLE,
         Key: { username }
