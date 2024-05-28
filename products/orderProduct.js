@@ -1,11 +1,9 @@
 const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB.DocumentClient();
-const eventBridge = new AWS.EventBridge();
 const { v4: uuidv4 } = require('uuid');
 
 const ORDERS_TABLE = process.env.ORDERS_TABLE;
 const ORDERS_STATUS_TABLE = process.env.ORDERS_STATUS_TABLE;
-const UPDATE_ORDER_STATUS_LAMBDA_ARN = process.env.UPDATE_ORDER_STATUS_LAMBDA_ARN;
 
 module.exports.orderProduct = async (event) => {
     try {

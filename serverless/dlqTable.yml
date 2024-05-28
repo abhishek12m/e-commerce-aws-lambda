@@ -1,10 +1,10 @@
 Type: AWS::DynamoDB::Table
 Properties:
   AttributeDefinitions:
-    - AttributeName: email
+    - AttributeName: orderId
       AttributeType: S
   KeySchema:
-    - AttributeName: email
+    - AttributeName: orderId
       KeyType: HASH
   BillingMode: PAY_PER_REQUEST
-  TableName: ${file(./serverless/env.yml):environments.USERS_TABLE}
+  TableName: ${file(./serverless/env.yml):environments.DLQ_TABLE}

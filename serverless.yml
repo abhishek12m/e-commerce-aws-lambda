@@ -6,24 +6,14 @@ provider:
   runtime: nodejs18.x
   region: us-east-1
   stage: dev
-  iam:
-    role:
-      statements:
-        - Effect: Allow
-          Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - Fn::GetAtt: [ UsersTable, Arn ]
-            - Fn::GetAtt: [ ProductsTable, Arn ]
-            - Fn::GetAtt: [ OrdersTable, Arn ]
-            - Fn::GetAtt: [ OrdersStatusTable, Arn ]
 
 functions: ${file(./functionsYML/main.yml):functions}
+
+custom:
+  updateOrderQueueUrl:
+    Ref: UpdateOrderQueue
+  updateOrderDLQUrl:
+    Ref: UpdateOrderDLQ
 
 resources:
   - ${file(./serverless/resources.yml)}

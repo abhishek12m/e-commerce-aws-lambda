@@ -1,38 +1,26 @@
 const AWS = require('aws-sdk');
+const { deleteMessageFromSQS } = require('./sqsOperations');
 const dynamo = new AWS.DynamoDB.DocumentClient();
+const sqs = new AWS.SQS();
 
-const ORDERS_TABLE = process.env.ORDERS_TABLE;
-const ORDERS_STATUS_TABLE = process.env.ORDERS_STATUS_TABLE;
+const { ORDERS_TABLE, ORDERS_STATUS_TABLE, UPDATE_ORDER_QUEUE_URL } = process.env;
 
-module.exports.updateOrderStatus = async (event) => {
+module.exports.updateOrderStatus = async (event, context, callback) => {
     try {
-        console.log('Event received:', event);
+        for (const record of event.Records) {
+            const { orderId, userId, expectedDeliveryTime } = JSON.parse(record.body);
+            const receiptHandle = record.receiptHandle;
+            const currentTime = new Date().toISOString();
 
-        // Fetch all orders with status "order out for delivery"
-        const scanParams = {
-            TableName: ORDERS_STATUS_TABLE,
-            FilterExpression: 'orderStatus = :status',
-            ExpressionAttributeValues: {
-                ':status': 'order out for delivery'
-            }
-        };
-
-        const orders = await dynamo.scan(scanParams).promise();
-        console.log('Orders retrieved:', orders);
-
-        const currentTime = new Date().toISOString();
-
-        for (const orderStatus of orders.Items) {
             const order = await dynamo.get({
                 TableName: ORDERS_TABLE,
-                Key: { orderId: orderStatus.orderId }
+                Key: { orderId }
             }).promise();
-            console.log('Order retrieved:', order);
 
-            if (order.Item && new Date(orderStatus.expectedDeliveryTime) < new Date(currentTime)) {
+            if (order.Item && new Date(expectedDeliveryTime) < new Date(currentTime)) {
                 const params = {
                     TableName: ORDERS_STATUS_TABLE,
-                    Key: { orderId: orderStatus.orderId },
+                    Key: { orderId },
                     UpdateExpression: 'set orderStatus = :status, statusUpdateDate = :updateDate',
                     ExpressionAttributeValues: {
                         ':status': 'completed',
@@ -42,18 +30,18 @@ module.exports.updateOrderStatus = async (event) => {
 
                 await dynamo.update(params).promise();
                 console.log('Order status updated:', params);
+
+                
+                await deleteMessageFromSQS(UPDATE_ORDER_QUEUE_URL, receiptHandle);
             }
         }
 
-        return {
+        callback(null, {
             statusCode: 200,
             body: JSON.stringify({ message: 'Order statuses checked and updated' })
-        };
+        });
     } catch (error) {
-        console.error('Error updating order status:', error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ message: 'Internal Server Error' })
-        };
+        console.error('Error processing order status:', error);
+        callback(new Error(`Error processing order status: ${error.message}`));
     }
 };

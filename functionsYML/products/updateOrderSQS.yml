@@ -1,0 +1,6 @@
+handler: products/updateOrderSQS.updateOrderSQS
+environment:
+  ORDERS_STATUS_TABLE: ${file(./serverless/env.yml):environments.ORDERS_STATUS_TABLE}
+  UPDATE_ORDER_QUEUE_URL: ${self:custom.updateOrderQueueUrl}
+events:
+  - schedule: rate(1 minute)

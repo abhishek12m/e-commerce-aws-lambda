@@ -4,7 +4,8 @@ const { getSSMParameter } = require('../ssmUtil/ssmUtil');
 module.exports.authorizeToken = async (event, context, callback) => {
 
     const token = event.headers.Authorization;
-    const secretKey = await getSSMParameter("SECRET_KEY") || "secret";
+    // const secretKey = await getSSMParameter("SECRET_KEY") || "secret";
+    const secretKey = "secret";
     if (!token) {
         console.log("Token not provided");
         return callback(null, generateErrorResponse(401, "Unauthorized: Token missing"));
